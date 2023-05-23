@@ -48,7 +48,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{{ route('most-in-demand') }}">Most Popular</a></li>
-                                <li><a class="dropdown-item" href="{{ route('most-searched') }}">Most Searched</a></li>
+                                <li><a class="dropdown-item" href="{{ route('whats-hot') }}">What's Hot?</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">

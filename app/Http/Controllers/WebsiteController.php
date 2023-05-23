@@ -29,9 +29,9 @@ class WebsiteController extends Controller
         return view('pages.website.most-viewed');
     }
 
-    public function seeMore(Request $request) {
-        dd($request->all());
-    }
+    // public function seeMore(Request $request) {
+    //     dd($request->all());
+    // }
 
     public function reviews() {
         return view('pages.website.reviews');

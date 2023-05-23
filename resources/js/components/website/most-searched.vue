@@ -17,7 +17,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-8">
-                            <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> Fast Selling - {{ brand_name }}</h3>
+                            <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> What's hot? - {{ brand_name }}</h3>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                         <div class="card" v-if="index <= 19">
                             <img :src="shoe['thumbnail']" class="card-img-top p-3" alt="shoes">
                             <div class="card-body" style="margin: 2px solid black">
-                                <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }} - {{ shoe.sold }} </h5>
+                                <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }} </h5>
                                 <p class="card-text">
                                     Colorway: {{ shoe.colorway }}
                                 </p>
@@ -76,11 +76,11 @@
                                     </tr>
                                     <tr>
                                         <td class="pb-2"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ individual_shoe.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(individual_shoe.retailPrice) }} </td>
                                     </tr>
                                     <tr>
                                         <td class="pb-2"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ individual_shoe.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(individual_shoe.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                                 <div class="mt-4"> 
@@ -113,6 +113,8 @@ export default {
             all_pages: 0,
             page: 0,
             num_of_shoes: 0,
+            // As of May 24, you can change this.
+            conv_rate: 55.75,
             shoe_brands: [
                 {
                     name: 'All',
@@ -125,60 +127,160 @@ export default {
                     sold_average: 50
                 },
                 {
-                    name: 'Asics',
-                    text: 'Asics',
+                    name: "ASICS",
+                    text: "ASICS",
                     sold_average: 5
                 },
                 {
-                    name: 'Birkenstock',
-                    text: 'Birkenstock',
+                    name: "Balenciaga",
+                    text: "Balenciaga",
+                    sold_average: 1
+                },
+                {
+                    name: "Birkenstock",
+                    text: "Birkenstock",
+                    sold_average: 1
+                },
+                {
+                    name: "Brooks",
+                    text: "Brooks",
+                    sold_average: 0
+                },
+                {
+                    name: "Burberry",
+                    text: "Burberry",
                     sold_average: 2
                 },
                 {
-                    name: 'Burberry',
-                    text: 'Burberry',
-                    sold_average: 5
+                    name: "Christian Louboutin",
+                    text: "Christian Louboutin",
+                    sold_average: 0
                 },
                 {
-                    name: 'Converse',
-                    text: 'Converse',
+                    name: "Clarks",
+                    text: "Clarks",
+                    sold_average: 1
+                },
+                {
+                    name: "Converse",
+                    text: "Converse",
                     sold_average: 10
                 },
                 {
-                    name: 'Crocs',
-                    text: 'Crocs',
+                    name: "Crocs",
+                    text: "Crocs",
                     sold_average: 30
                 },
                 {
-                    name: 'Jordan',
-                    text: 'Jordan',
+                    name: "Dr. Martens",
+                    text: "Dr. Martens",
+                    sold_average: 1
+                },
+                {
+                    name: "Fila",
+                    text: "Fila",
+                    sold_average: 0
+                },
+                {
+                    name: "Gucci",
+                    text: "Gucci",
+                    sold_average: 1
+                },
+                {
+                    name: "Hoka One One",
+                    text: "Hoka One One",
+                    sold_average: 1
+                },
+                {
+                    name: "Jimmy Choo",
+                    text: "Jimmy Choo",
+                    sold_average: 0
+                },
+                {
+                    name: "Jordan",
+                    text: "Jordan",
                     sold_average: 100
                 },
                 {
-                    name: 'New Balance',
-                    text: 'New Balance',
+                    name: "Keen",
+                    text: "Keen",
+                    sold_average: 0
+                },
+                {
+                    name: "K-Swiss",
+                    text: "K-Swiss",
+                    sold_average: 0
+                },
+                {
+                    name: "Louis Vuitton",
+                    text: "Louis Vuitton",
+                    sold_average: 1
+                },
+                {
+                    name: "Merrell",
+                    text: "Merrell",
+                    sold_average: 0
+                },
+                {
+                    name: "Mizuno",
+                    text: "Mizuno",
+                    sold_average: 0
+                },
+                {
+                    name: "New Balance",
+                    text: "New Balance",
                     sold_average: 30
                 },
                 {
-                    name: 'Nike',
-                    text: 'Nike',
+                    name: "Nike",
+                    text: "Nike",
                     sold_average: 150
                 },
                 {
-                    name: 'Puma',
-                    text: 'Puma',
+                    name: "Prada",
+                    text: "Prada",
+                    sold_average: 0
+                },
+                {
+                    name: "Puma",
+                    text: "Puma",
                     sold_average: 7
                 },
                 {
-                    name: 'Under Armour',
-                    text: 'Under Armour',
+                    name: "Reebok",
+                    text: "Reebok",
                     sold_average: 2
                 },
                 {
-                    name: 'Vans',
-                    text: 'Vans',
+                    name: "Salomon",
+                    text: "Salomon",
+                    sold_average: 1
+                },
+                {
+                    name: "Superga",
+                    text: "Superga",
+                    sold_average: 0
+                },
+                {
+                    name: "Timberland",
+                    text: "Timberland",
+                    sold_average: 0
+                },
+                {
+                    name: "Under Armour",
+                    text: "Under Armour",
+                    sold_average: 1
+                },
+                {
+                    name: "Vans",
+                    text: "Vans",
                     sold_average: 2
                 },
+                {
+                    name: "Versace",
+                    text: "Versace",
+                    sold_average: 1
+                }
             ]
         }
     },
@@ -193,7 +295,6 @@ export default {
             // Get shoe brand deadstock average value
             this.shoe_brands.forEach((brand) => {
                 if (brand.name == this.brand_name) {
-                    console.log(brand.name)
                     current_brand = brand
                 }
             })
@@ -271,7 +372,6 @@ export default {
             //arr.sort(function(a, b) { return a.value.toLowerCase().localeCompare(b.value.toLowerCase()); }); //use this to sort as strings
             this.shoe_list = [];
             this.shoe_list = arr;
-            console.log(this.shoe_list)
         },
         seeMore(shoe) {
             this.individual_shoe = []
@@ -301,6 +401,13 @@ export default {
                 return moment(newDate).format('LL')
             }
         },
+        usdToPhp(num) {
+            if (num) {
+                var multiply_num = num * this.conv_rate
+
+                return multiply_num.toLocaleString("en-US", {minimumFractionDigits: 2})
+            }
+        }
     }
 }
 </script>

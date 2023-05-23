@@ -196,4 +196,14 @@ body {
     -webkit-appearance: none;
     margin-top: -7px;
   }
+
+  .sidebar {
+    overflow-y: auto;
+    top: 0;
+    bottom: 0;
+  }
+
+  .min-height {
+    max-height: calc(110vh - 9rem);
+  }
   

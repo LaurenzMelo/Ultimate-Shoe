@@ -1,5 +1,5 @@
 <template>
-    <div class="col-md-2 pr-0" style="background-color: #616161;">
+    <div class="col-md-2 pr-0 sidebar" id="sidebar-scroll" style="background-color: #616161;">
         <div class="text-center">
             <h2 class="mt-5 mb-4" style="color: white">Shoe Brands</h2>
             <ul class="mb-5 pl-0 pr-0">
@@ -37,11 +37,11 @@
                 Price Range
             </label>
             <div class="range-slider d-none" id="range-slider">
-                <input type="range" min="0" max="600" step="1" v-model="slider_min" />
-                <span class="font-weight-bold" style="font-size: 1.5em"> $ </span><input class="px-3 py-1" type="number" min="0" max="600" step="1" v-model="slider_min" />
+                <input type="range" min="0" max="50000" step="100" v-model="slider_min" />
+                <span class="font-weight-bold" style="font-size: 1.5em"> ₱ </span><input class="px-3 py-1" type="number" min="0" max="50000" step="100" v-model="slider_min" />
                 <span class="ml-3 mr-3"> TO </span>
-                <span class="font-weight-bold" style="font-size: 1.5em"> $ </span><input type="range" min="0" max="600" step="1" v-model="slider_max" />
-                <input class="px-3 py-1" type="number" min="0" max="600" step="1" v-model="slider_max" />
+                <span class="font-weight-bold" style="font-size: 1.5em"> ₱ </span><input type="range" min="0" max="50000" step="100" v-model="slider_max" />
+                <input class="px-3 py-1" type="number" min="0" max="50000" step="100" v-model="slider_max" />
                 <button @click="searchSpecific(0, false, true)" type="button" class="btn btn-warning ml-4"> Search </button>
             </div>
         </div>
@@ -138,11 +138,11 @@
                                     </tr>
                                     <tr>
                                         <td class="pb-2"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ individual_shoe.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(individual_shoe.retailPrice) }} </td>
                                     </tr>
                                     <tr>
                                         <td class="pb-2"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ individual_shoe.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(individual_shoe.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                                 <div class="mt-4"> 
@@ -178,10 +178,12 @@ export default {
             search: '',
             search_error: false,
             slider_min: 0,
-            slider_max: 600,
+            slider_max: 50000,
             min_price: 0,
-            max_price: 600,
+            max_price: 50000,
             show_price_range: false,
+            // As of May 24, you can change this.
+            conv_rate: 55.75,
             shoe_brands: [
                 {
                     name: 'All',
@@ -192,55 +194,134 @@ export default {
                     text: 'Adidas'
                 },
                 {
-                    name: 'Asics',
-                    text: 'Asics'
+                    name: "ASICS",
+                    text: "ASICS"
                 },
                 {
-                    name: 'Birkenstock',
-                    text: 'Birkenstock'
+                    name: "Balenciaga",
+                    text: "Balenciaga"
                 },
                 {
-                    name: 'Burberry',
-                    text: 'Burberry'
+                    name: "Birkenstock",
+                    text: "Birkenstock"
                 },
                 {
-                    name: 'Converse',
-                    text: 'Converse'
+                    name: "Brooks",
+                    text: "Brooks"
                 },
                 {
-                    name: 'Crocs',
-                    text: 'Crocs'
+                    name: "Burberry",
+                    text: "Burberry"
                 },
                 {
-                    name: 'Jordan',
-                    text: 'Jordan'
+                    name: "Christian Louboutin",
+                    text: "Christian Louboutin"
                 },
                 {
-                    name: 'New Balance',
-                    text: 'New Balance'
+                    name: "Clarks",
+                    text: "Clarks"
                 },
                 {
-                    name: 'Nike',
-                    text: 'Nike'
+                    name: "Converse",
+                    text: "Converse"
                 },
                 {
-                    name: 'Puma',
-                    text: 'Puma'
+                    name: "Crocs",
+                    text: "Crocs"
                 },
                 {
-                    name: 'Under Armour',
-                    text: 'Under Armour'
+                    name: "Dr. Martens",
+                    text: "Dr. Martens"
                 },
                 {
-                    name: 'Vans',
-                    text: 'Vans'
+                    name: "Fila",
+                    text: "Fila"
                 },
+                {
+                    name: "Gucci",
+                    text: "Gucci"
+                },
+                {
+                    name: "Hoka One One",
+                    text: "Hoka One One"
+                },
+                {
+                    name: "Jimmy Choo",
+                    text: "Jimmy Choo"
+                },
+                {
+                    name: "Jordan",
+                    text: "Jordan"
+                },
+                {
+                    name: "Keen",
+                    text: "Keen"
+                },
+                {
+                    name: "K-Swiss",
+                    text: "K-Swiss"
+                },
+                {
+                    name: "Louis Vuitton",
+                    text: "Louis Vuitton"
+                },
+                {
+                    name: "Merrell",
+                    text: "Merrell"
+                },
+                {
+                    name: "Mizuno",
+                    text: "Mizuno"
+                },
+                {
+                    name: "New Balance",
+                    text: "New Balance"
+                },
+                {
+                    name: "Nike",
+                    text: "Nike"
+                },
+                {
+                    name: "Prada",
+                    text: "Prada"
+                },
+                {
+                    name: "Puma",
+                    text: "Puma"
+                },
+                {
+                    name: "Reebok",
+                    text: "Reebok"
+                },
+                {
+                    name: "Salomon",
+                    text: "Salomon"
+                },
+                {
+                    name: "Superga",
+                    text: "Superga"
+                },
+                {
+                    name: "Timberland",
+                    text: "Timberland"
+                },
+                {
+                    name: "Under Armour",
+                    text: "Under Armour"
+                },
+                {
+                    name: "Vans",
+                    text: "Vans"
+                },
+                {
+                    name: "Versace",
+                    text: "Versace"
+                }
             ]
         }
     },
     watch: {
         show_price_range(val) {
-            // console.log(this.show_price_range)
             var range = document.getElementById("range-slider");
 
             if (val) {
@@ -249,13 +330,22 @@ export default {
                 range.classList.add("d-none");
             }
         },
-        price_range() {
-            console.log(this.price_range)
-        },
         active_page() {
             this.next_page = this.active_page + 2
             this.previous_page = this.active_page
         },
+        shoe_list() {
+            var sidebar = document.getElementById("sidebar-scroll");
+            var pageHeight = document.body.scrollHeight
+
+            if (pageHeight <= 789) {
+                sidebar.classList.add('min-height');
+            } else {
+                sidebar.classList.remove('min-height');
+                var newHeight = parseInt(pageHeight) + 400
+                sidebar.style.maxHeight = newHeight + 'px';
+            }
+        }
     },
     computed: {
         slider_min: {
@@ -292,8 +382,8 @@ export default {
         searchSpecific(page = 0, from_pages = false, from_range = false, count = 20,) {
             let search = this.search
             let brand = this.brand_name
-            let min_price = this.min_price
-            let max_price = this.max_price
+            let min_price = (this.min_price / this.conv_rate).toFixed(2)
+            let max_price = (this.max_price / this.conv_rate).toFixed(2)
             this.active_page = page
             
             if (brand == 'All') {
@@ -358,6 +448,9 @@ export default {
                 brand = 'Sneakers Shoes'
             }
 
+            var access = document.getElementById("go-here");
+            access.scrollIntoView({behavior: 'smooth'}, true);
+
             axios.post('https://xw7sbct9v6-1.algolianet.com/1/indexes/products/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.32.1&x-algolia-application-id=XW7SBCT9V6&x-algolia-api-key=6b5e76b49705eb9f51a06d3c82f7acee', {
                 "params" : "query=${" + brand + "}&facets=*&filters=&hitsPerPage=" + count + "&page=" + this.active_page + ""
             }).then(response => {
@@ -369,7 +462,7 @@ export default {
                 // this.pages = 5
 
                 for (var i = 0; i < json.hits.length; i++) {
-                    if (json.hits[i].product_category == 'sneakers') {
+                    if (json.hits[i].product_category == 'sneakers' && (json.hits[i].brand.toLowerCase() == this.brand_name.toLowerCase() || this.brand_name == 'All')) {
                         // if (!json.hits[i].style_id || (json.hits[i].style_id).indexOf(' ') >= 0) {
                         //     numOfShoes--;
                         //     continue;
@@ -438,6 +531,13 @@ export default {
                 str = word.charAt(0).toUpperCase() + word.slice(1)
 
                 return str
+            }
+        },
+        usdToPhp(num) {
+            if (num) {
+                var multiply_num = num * this.conv_rate
+
+                return multiply_num.toLocaleString("en-US", {minimumFractionDigits: 2})
             }
         }
     }

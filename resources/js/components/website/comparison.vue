@@ -18,8 +18,8 @@
                     <div class="row">
                         <div class="col-md-8 d-flex align-items-center">
                             <h3 class="mb-0 mr-3 font-weight-bold text-roboto"> Pick your fighter </h3>
-                            <!-- v-if="count_num >= 3" -->
-                            <button id="compare-shoe-btn" data-bs-toggle="modal" data-bs-target="#compareShoe" type="button" class="btn btn-danger"> FIGHT! </button>
+                            
+                            <button v-if="count_num >= 3" id="compare-shoe-btn" data-bs-toggle="modal" data-bs-target="#compareShoe" type="button" class="btn btn-danger"> FIGHT! </button>
                         </div>
                         <div class="col-md-3">
                             <input type="text" v-model="search" class="form-control" />
@@ -32,12 +32,14 @@
                 </div>
             </div>
         </div>
-        <div class="mt-3 mb-3" id="go-here-comparison">
-            <span v-for="(num, index) in count_num" :key="index">
-                <a v-if="num == 2" class="p-2 mr-2 shoe-comparison-list"> {{ firstLetterUp(shoe_1.shoeName) }} <span style="padding-left: 20px; cursor: pointer" @click="removeShoe(num)"> X </span></a>
-                <a v-else-if="num == 3" class="p-2 mr-2 shoe-comparison-list"> {{ firstLetterUp(shoe_2.shoeName) }} <span style="padding-left: 20px; cursor: pointer" @click="removeShoe(num)"> X </span></a>
-                <a v-else-if="num == 4" class="p-2 shoe-comparison-list"> {{ firstLetterUp(shoe_3.shoeName) }} <span style="padding-left: 20px; cursor: pointer" @click="removeShoe(num)"> X </span></a>
-            </span>
+        <div class="mt-3 mb-3 container-fluid" id="go-here-comparison">
+            <div class="row" >
+                <div class="col-md-4" v-for="(num, index) in count_loop" :key="index">
+                    <div v-if="num+1 == 2" class="p-2 mr-2 shoe-comparison-list"> {{ firstLetterUp(shoe_1.shoeName) }}<span style="float:right; cursor: pointer" @click="removeShoe(num+1)"> X </span></div>
+                    <div v-else-if="num+1 == 3" class="p-2 mr-2 shoe-comparison-list"> {{ firstLetterUp(shoe_2.shoeName) }} <span style="float:right; cursor: pointer" @click="removeShoe(num+1)"> X </span></div>
+                    <div v-else-if="num+1 == 4" class="p-2 shoe-comparison-list"> {{ firstLetterUp(shoe_3.shoeName) }} <span style="float:right; cursor: pointer" @click="removeShoe(num+1)"> X </span></div>
+                </div>
+            </div>
         </div>
         <div class="card mt-2 mr-2">
             <div class="card-body p-3 pt-2">
@@ -54,6 +56,48 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row mt-5">
+                    <nav aria-label="Page navigation pagination">
+                        <ul class="pagination justify-content-end">
+                            <li v-if="active_page != 0" class="page-item">
+                                <a class="page-link" aria-label="First" @click="searchSpecific(0, true)">
+                                    <span aria-hidden="true"> First </span>
+                                </a>
+                            </li>
+                            <li v-if="active_page == 0" class="page-item disabled">
+                                <a class="page-link" aria-label="Previous">
+                                    <span aria-hidden="true"> Previous </span>
+                                </a>
+                            </li>
+                            <li v-else class="page-item">
+                                <a class="page-link" aria-label="Previous" @click="searchSpecific(this.active_page - 1)">
+                                    <span aria-hidden="true"> Previous </span>
+                                </a>
+                            </li>
+                            <li v-for="(page, index) in pages" :key="index">
+                                <a v-if="active_page + 1 == page" class="page-link active" @click="searchSpecific(page-1)"> {{ page }} </a>
+                                <a v-else-if="previous_page == page" class="page-link" @click="searchSpecific(page-1)"> {{ previous_page }} </a>
+                                <a v-else-if="next_page == page" class="page-link" @click="searchSpecific(page-1)"> {{ next_page }} </a>
+                                <a v-else> ⁃ </a>
+                            </li>
+                            <li v-if="active_page + 1 == pages" class="page-item disabled">
+                                <a class="page-link" aria-label="Next">
+                                    <span aria-hidden="true"> Next </span>
+                                </a>
+                            </li>
+                            <li v-else class="page-item">
+                                <a class="page-link" aria-label="Next" @click="searchSpecific(this.active_page + 1)">
+                                    <span aria-hidden="true"> Next </span>
+                                </a>
+                            </li>
+                            <li v-if="active_page + 1 != pages" class="page-item">
+                                <a class="page-link" aria-label="Last" @click="searchSpecific(this.pages-1)">
+                                    <span aria-hidden="true"> Last </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -170,7 +214,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_1.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_1.retailPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -178,7 +222,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_2.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_2.retailPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -186,7 +230,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_3.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_3.retailPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -197,7 +241,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_1.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_1.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -205,7 +249,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_2.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_2.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -213,7 +257,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_3.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_3.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -314,7 +358,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_1.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> $ {{ usdToPhp(shoe_1.retailPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -322,7 +366,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Retail Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_2.retailPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> $ {{ usdToPhp(shoe_2.retailPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -333,7 +377,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_1.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_1.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -341,7 +385,7 @@
                                 <table class="w-100">
                                     <tr>
                                         <td class="pb-2 w-40"> Lowest <br>Resell Price </td>
-                                        <td class="font-weight-bold pb-2"> $ {{ shoe_2.lowestResellPrice }} </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(shoe_2.lowestResellPrice) }} </td>
                                     </tr>
                                 </table>
                             </div>
@@ -381,78 +425,148 @@ export default {
             shoe_2 : [],
             shoe_3 : [],
             count_num: 1,
+            count_loop: 0,
             pages: 0,
             previous_page: -1,
             active_page: 0,
             next_page: 2,
             search: '',
             search_error: false,
+            // As of May 24, you can change this.
+            conv_rate: 55.75,
             shoe_brands: [
                 {
                     name: 'All',
-                    text: 'All',
-                    sold_average: 100
+                    text: 'All'
                 },
                 {
                     name: 'Adidas',
-                    text: 'Adidas',
-                    sold_average: 50
+                    text: 'Adidas'
                 },
                 {
-                    name: 'Asics',
-                    text: 'Asics',
-                    sold_average: 5
+                    name: "ASICS",
+                    text: "ASICS"
                 },
                 {
-                    name: 'Birkenstock',
-                    text: 'Birkenstock',
-                    sold_average: 2
+                    name: "Balenciaga",
+                    text: "Balenciaga"
                 },
                 {
-                    name: 'Burberry',
-                    text: 'Burberry',
-                    sold_average: 5
+                    name: "Birkenstock",
+                    text: "Birkenstock"
                 },
                 {
-                    name: 'Converse',
-                    text: 'Converse',
-                    sold_average: 10
+                    name: "Brooks",
+                    text: "Brooks"
                 },
                 {
-                    name: 'Crocs',
-                    text: 'Crocs',
-                    sold_average: 30
+                    name: "Burberry",
+                    text: "Burberry"
                 },
                 {
-                    name: 'Jordan',
-                    text: 'Jordan',
-                    sold_average: 100
+                    name: "Christian Louboutin",
+                    text: "Christian Louboutin"
                 },
                 {
-                    name: 'New Balance',
-                    text: 'New Balance',
-                    sold_average: 30
+                    name: "Clarks",
+                    text: "Clarks"
                 },
                 {
-                    name: 'Nike',
-                    text: 'Nike',
-                    sold_average: 150
+                    name: "Converse",
+                    text: "Converse"
                 },
                 {
-                    name: 'Puma',
-                    text: 'Puma',
-                    sold_average: 7
+                    name: "Crocs",
+                    text: "Crocs"
                 },
                 {
-                    name: 'Under Armour',
-                    text: 'Under Armour',
-                    sold_average: 2
+                    name: "Dr. Martens",
+                    text: "Dr. Martens"
                 },
                 {
-                    name: 'Vans',
-                    text: 'Vans',
-                    sold_average: 2
+                    name: "Fila",
+                    text: "Fila"
                 },
+                {
+                    name: "Gucci",
+                    text: "Gucci"
+                },
+                {
+                    name: "Hoka One One",
+                    text: "Hoka One One"
+                },
+                {
+                    name: "Jimmy Choo",
+                    text: "Jimmy Choo"
+                },
+                {
+                    name: "Jordan",
+                    text: "Jordan"
+                },
+                {
+                    name: "Keen",
+                    text: "Keen"
+                },
+                {
+                    name: "K-Swiss",
+                    text: "K-Swiss"
+                },
+                {
+                    name: "Louis Vuitton",
+                    text: "Louis Vuitton"
+                },
+                {
+                    name: "Merrell",
+                    text: "Merrell"
+                },
+                {
+                    name: "Mizuno",
+                    text: "Mizuno"
+                },
+                {
+                    name: "New Balance",
+                    text: "New Balance"
+                },
+                {
+                    name: "Nike",
+                    text: "Nike"
+                },
+                {
+                    name: "Prada",
+                    text: "Prada"
+                },
+                {
+                    name: "Puma",
+                    text: "Puma"
+                },
+                {
+                    name: "Reebok",
+                    text: "Reebok"
+                },
+                {
+                    name: "Salomon",
+                    text: "Salomon"
+                },
+                {
+                    name: "Superga",
+                    text: "Superga"
+                },
+                {
+                    name: "Timberland",
+                    text: "Timberland"
+                },
+                {
+                    name: "Under Armour",
+                    text: "Under Armour"
+                },
+                {
+                    name: "Vans",
+                    text: "Vans"
+                },
+                {
+                    name: "Versace",
+                    text: "Versace"
+                }
             ]
         }
     },
@@ -461,7 +575,9 @@ export default {
             if (this.count_num == 4) {
                 document.getElementById("compare-shoe-btn").click();
             }
-        }
+
+            this.count_loop = this.count_num - 1
+        },
     },
     mounted() {
         this.searchShoeBrand('All');
@@ -487,30 +603,22 @@ export default {
             if (this.count_num == 1) {
                 this.shoe_1 = shoe
                 this.count_num += 1
-                console.log('1')
-                console.log(this.shoe_1)
             } else if (this.count_num == 2) {
                 this.shoe_2 = shoe
                 this.count_num += 1
-                console.log('2')
-                console.log(this.shoe_2)
             } else if (this.count_num == 3) {
                 this.shoe_3 = shoe
                 this.count_num += 1
-                console.log('3')
-                console.log(this.shoe_3)
             } else {
                 //ERROR
                 console.log('error')
             }
         },
         searchSpecific(page = 0, from_pages = false, count = 20,) {
-            console.log(page)
             let search = this.search
             let brand = this.brand_name
             this.active_page = page
             if (brand == 'All') {
-                console.log('here')
                 brand = 'Sneakers shoes'
             }
 
@@ -647,6 +755,16 @@ export default {
             if (num) {
                 return num.toLocaleString('en-US')
             }
+        },
+        usdToPhp(num) {
+            if (num) {
+                var multiply_num = num * this.conv_rate
+
+                return multiply_num.toLocaleString("en-US", {minimumFractionDigits: 2})
+            }
+        },
+        startFrom (arr, idx) {
+            return arr.slice(idx)
         }
     }
 }

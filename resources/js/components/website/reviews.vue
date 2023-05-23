@@ -86,7 +86,6 @@ export default {
             axios.get('api/reviews/getReviews').then(response => {
                 this.review_list = response.data.data
                 this.average_star = response.data.average
-                console.log(this.review_list)
             })
         },
         saveReview() {
