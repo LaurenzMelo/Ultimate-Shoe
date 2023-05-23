@@ -7,7 +7,12 @@ Route::get('/', function () {
     return view('pages/website/index');
 })->name('dashboard');
 
-Auth::routes();
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'verify' => false,
+    'login' => false
+]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
