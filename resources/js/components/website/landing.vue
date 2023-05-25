@@ -28,6 +28,9 @@
                             <button @click="searchSpecific()" type="button" class="btn btn-primary"> Search </button>
                         </div>
                     </div>
+                    <div class="row" v-if="brand_name != 'All'">
+                        <span> Official Website: <a class="font-weight-bold" :href="selected_brand.website" target="_blank">{{ selected_brand.website }}</a></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,6 +187,7 @@ export default {
             show_price_range: false,
             // As of May 24, you can change this.
             conv_rate: 55.75,
+            selected_brand: [],
             shoe_brands: [
                 {
                     name: 'All',
@@ -191,131 +195,163 @@ export default {
                 },
                 {
                     name: 'Adidas',
-                    text: 'Adidas'
+                    text: 'Adidas',
+                    website: 'https://www.adidas.com/'
                 },
                 {
                     name: "ASICS",
-                    text: "ASICS"
+                    text: "ASICS",
+                    website: 'https://www.asics.com/'
                 },
                 {
                     name: "Balenciaga",
-                    text: "Balenciaga"
+                    text: "Balenciaga",
+                    website: 'https://www.balenciaga.com/'
                 },
                 {
                     name: "Birkenstock",
-                    text: "Birkenstock"
+                    text: "Birkenstock",
+                    website: 'https://www.birkenstock.com/'
                 },
                 {
                     name: "Brooks",
-                    text: "Brooks"
+                    text: "Brooks",
+                    website: 'https://www.brooksrunning.com/'
                 },
                 {
                     name: "Burberry",
-                    text: "Burberry"
+                    text: "Burberry",
+                    website: 'https://www.burberry.com/'
                 },
                 {
                     name: "Christian Louboutin",
-                    text: "Christian Louboutin"
+                    text: "Christian Louboutin",
+                    website: 'https://us.christianlouboutin.com/'
                 },
                 {
                     name: "Clarks",
-                    text: "Clarks"
+                    text: "Clarks",
+                    website: 'https://www.clarksusa.com/'
                 },
                 {
                     name: "Converse",
-                    text: "Converse"
+                    text: "Converse",
+                    website: 'https://www.converse.com/'
                 },
                 {
                     name: "Crocs",
-                    text: "Crocs"
+                    text: "Crocs",
+                    website: 'https://www.crocs.com/'
                 },
                 {
                     name: "Dr. Martens",
-                    text: "Dr. Martens"
+                    text: "Dr. Martens",
+                    website: 'https://www.drmartens.com/'
                 },
                 {
                     name: "Fila",
-                    text: "Fila"
+                    text: "Fila",
+                    website: 'https://www.fila.com/'
                 },
                 {
                     name: "Gucci",
-                    text: "Gucci"
+                    text: "Gucci",
+                    website: 'https://www.gucci.com/'
                 },
                 {
                     name: "Hoka One One",
-                    text: "Hoka One One"
+                    text: "Hoka One One",
+                    website: 'https://www.hokaoneone.com/'
                 },
                 {
                     name: "Jimmy Choo",
-                    text: "Jimmy Choo"
+                    text: "Jimmy Choo",
+                    website: 'https://www.jimmychoo.com/'
                 },
                 {
                     name: "Jordan",
-                    text: "Jordan"
+                    text: "Jordan",
+                    website: 'https://www.nike.com/jordan/'
                 },
                 {
                     name: "Keen",
-                    text: "Keen"
+                    text: "Keen",
+                    website: 'https://www.keenfootwear.com/'
                 },
                 {
                     name: "K-Swiss",
-                    text: "K-Swiss"
+                    text: "K-Swiss",
+                    website: 'https://www.kswiss.com/'
                 },
                 {
                     name: "Louis Vuitton",
-                    text: "Louis Vuitton"
+                    text: "Louis Vuitton",
+                    website: 'https://www.louisvuitton.com/'
                 },
                 {
                     name: "Merrell",
-                    text: "Merrell"
+                    text: "Merrell",
+                    website: 'https://www.merrell.com/'
                 },
                 {
                     name: "Mizuno",
-                    text: "Mizuno"
+                    text: "Mizuno",
+                    website: 'https://www.mizunousa.com/'
                 },
                 {
                     name: "New Balance",
-                    text: "New Balance"
+                    text: "New Balance",
+                    website: 'https://www.newbalance.com/'
                 },
                 {
                     name: "Nike",
-                    text: "Nike"
+                    text: "Nike",
+                    website: 'https://www.nike.com/'
                 },
                 {
                     name: "Prada",
-                    text: "Prada"
+                    text: "Prada",
+                    website: 'https://www.prada.com/'
                 },
                 {
                     name: "Puma",
-                    text: "Puma"
+                    text: "Puma",
+                    website: 'https://www.puma.com/'
                 },
                 {
                     name: "Reebok",
-                    text: "Reebok"
+                    text: "Reebok",
+                    website: 'https://www.reebok.com/'
                 },
                 {
                     name: "Salomon",
-                    text: "Salomon"
+                    text: "Salomon",
+                    website: 'https://www.salomon.com/'
                 },
                 {
                     name: "Superga",
-                    text: "Superga"
+                    text: "Superga",
+                    website: 'https://www.superga-usa.com/'
                 },
                 {
                     name: "Timberland",
-                    text: "Timberland"
+                    text: "Timberland",
+                    website: 'https://www.timberland.com/'
                 },
                 {
                     name: "Under Armour",
-                    text: "Under Armour"
+                    text: "Under Armour",
+                    website: 'https://www.underarmour.com/'
                 },
                 {
                     name: "Vans",
-                    text: "Vans"
+                    text: "Vans",
+                    website: 'https://www.vans.com/'
                 },
                 {
                     name: "Versace",
-                    text: "Versace"
+                    text: "Versace",
+                    website: 'https://www.versace.com/'
                 }
             ]
         }
@@ -448,6 +484,8 @@ export default {
                 brand = 'Sneakers Shoes'
             }
 
+            this.getBrand(brand)
+
             var access = document.getElementById("go-here");
             access.scrollIntoView({behavior: 'smooth'}, true);
 
@@ -490,6 +528,15 @@ export default {
                 }
                 this.shoe_list = products
             });
+        },
+        getBrand(brand) {
+            if (brand) {
+                this.shoe_brands.forEach(b => {
+                    if (b.name == brand) {
+                        this.selected_brand = b
+                    }
+                })
+            }
         },
         seeMore(shoe) {
             this.individual_shoe = []
