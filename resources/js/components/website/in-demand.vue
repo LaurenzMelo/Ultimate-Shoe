@@ -20,6 +20,9 @@
                             <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> Most Popular </h3>
                         </div>
                     </div>
+                    <div class="row">
+                        <span> As of <span class="font-weight-bold">{{ date_today }}</span></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -31,9 +34,8 @@
                             <img :src="shoe['thumbnail']" class="card-img-top p-3" alt="shoes">
                             <div class="card-body" style="margin: 2px solid black">
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }} </h5>
-                                <p class="card-text">
-                                    Colorway: {{ shoe.colorway }}
-                                </p>
+                                <p class="card-text font-weight-bold"> ₱ {{ usdToPhp(shoe.retailPrice) }} </p>
+                                <p class="card-text"> Colorway: {{ shoe.colorway }} </p>
                                 <p class="card-text">
                                     <a @click="seeMore(shoe)" class="pseudo-link" data-bs-toggle="modal" data-bs-target="#checkShoePopular"> See More </a>
                                 </p>
@@ -115,6 +117,7 @@ export default {
             num_of_shoes: 0,
             // As of May 24, you can change this.
             conv_rate: 55.75,
+            date_today: '',
             shoe_brands: [
                 {
                     name: 'All',
@@ -300,6 +303,7 @@ export default {
     },
     mounted() {
         this.mostPopular('All');
+        this.getDate();
     },
     methods: {
         mostPopular(brand) {
@@ -420,6 +424,9 @@ export default {
 
                 return multiply_num.toLocaleString("en-US", {minimumFractionDigits: 2})
             }
+        },
+        getDate() {
+            this.date_today = moment().format('LL');
         }
     }
 }

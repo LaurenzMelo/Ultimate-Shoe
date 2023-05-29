@@ -43,7 +43,7 @@
                             <a class="nav-link @route('comparison') active-nav @endif" href="{{ route('comparison') }}">Comparison</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle @route('most-in-demand') active-nav @elseroute('most-searched') active-nav @elseroute('most-viewed') active-nav @endif" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle @route('most-in-demand') active-nav @elseroute('whats-hot') active-nav @endif" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Discover
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">

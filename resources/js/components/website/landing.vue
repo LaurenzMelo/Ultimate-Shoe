@@ -56,6 +56,7 @@
                             <img :src="shoe['thumbnail']" class="card-img-top p-3" alt="shoes">
                             <div class="card-body" style="margin: 2px solid black">
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }}</h5>
+                                <p class="card-text font-weight-bold"> ₱ {{ usdToPhp(shoe.retailPrice) }} </p>
                                 <p class="card-text"> {{ this.changeAndCut(shoe.description) }} </p>
                                 <p class="card-text">
                                     <a @click="seeMore(shoe)" class="pseudo-link" data-bs-toggle="modal" data-bs-target="#checkShoe"> See More </a>
