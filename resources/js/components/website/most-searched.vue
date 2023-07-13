@@ -17,7 +17,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-8">
-                            <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> What's hot? - {{ brand_name }}</h3>
+                            <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> What's hot? - {{ brand_name }} </h3>
                         </div>
                     </div>
                     <div class="row">
@@ -36,6 +36,10 @@
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }} </h5>
                                 <p class="card-text font-weight-bold"> ₱ {{ usdToPhp(shoe.retailPrice) }} </p>
                                 <p class="card-text"> Colorway: {{ shoe.colorway }} </p>
+                                <hr>
+                                <div class="mtb-05 orange">
+                                    ★ 4.87 <span  class="gray margin-sold"> | </span> <span class="gray"> {{ shoe.deadstock_sold }} sold </span>
+                                </div>
                                 <p class="card-text">
                                     <a @click="seeMore(shoe)" class="pseudo-link" data-bs-toggle="modal" data-bs-target="#checkShoePopular"> See More </a>
                                 </p>
@@ -346,7 +350,8 @@ export default {
                                     resellLinks: {
                                         stockX: 'https://stockx.com/' + json.hits[i].url
                                     },
-                                    sold: json.hits[i].sales_last_72
+                                    sold: json.hits[i].sales_last_72,
+                                    deadstock_sold: json.hits[i].deadstock_sold
                                 };
                                 if(json.hits[i].lowest_ask){
                                     shoe.lowestResellPrice = json.hits[i].lowest_ask;
@@ -413,7 +418,7 @@ export default {
             }
         },
         getDate() {
-            this.date_today = moment().format('LL');
+            this.date_today = moment().format('LL hh:mm A');
         }
     }
 }

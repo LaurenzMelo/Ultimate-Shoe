@@ -17,7 +17,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-8">
-                            <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> Most Popular </h3>
+                            <h3 v-if="brand_name" class="mb-0 font-weight-bold text-roboto"> Most Popular - {{ brand_name }} </h3>
                         </div>
                     </div>
                     <div class="row">
@@ -30,12 +30,22 @@
             <div class="card-body p-3 pt-2">
                 <div class="row">
                     <div class="col-md-3 mt-4" v-for="(shoe, index) in shoe_list" :key="index">
-                        <div class="card" v-if="index <= 19">
+                        <div class="card p-3" v-if="index <= 19">
+                            <div> 
+                                <img v-if="shoe.brand == 'Superga' || shoe.brand == 'Birkenstock'" :src="brandLogo(shoe.brand)" class="brand-logo-width" />
+                                <img v-else-if="shoe.brand == 'Louis Vuitton'" :src="brandLogo(shoe.brand)" class="brand-logo-lv" />
+                                <img v-else-if="shoe.brand == 'Nike' || shoe.brand == 'Versace'" :src="brandLogo(shoe.brand)" class="brand-logo-nike" />
+                                <img v-else-if="shoe.brand == 'Timberland'" :src="brandLogo(shoe.brand)" class="brand-logo-timberland" />
+                                <img v-else :src="brandLogo(shoe.brand)" class="brand-logo" />
+                            </div>
                             <img :src="shoe['thumbnail']" class="card-img-top p-3" alt="shoes">
                             <div class="card-body" style="margin: 2px solid black">
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }} </h5>
                                 <p class="card-text font-weight-bold"> ₱ {{ usdToPhp(shoe.retailPrice) }} </p>
                                 <p class="card-text"> Colorway: {{ shoe.colorway }} </p>
+                                <div class="mtb-05 orange">
+                                    ★ 4.87 <span  class="gray margin-sold"> | </span> <span class="gray"> {{ shoe.sold }} sold </span>
+                                </div>
                                 <p class="card-text">
                                     <a @click="seeMore(shoe)" class="pseudo-link" data-bs-toggle="modal" data-bs-target="#checkShoePopular"> See More </a>
                                 </p>
@@ -306,6 +316,9 @@ export default {
         this.getDate();
     },
     methods: {
+        brandLogo(brand) {
+            return "images/logo/" + brand + ".png"
+        },
         mostPopular(brand) {
             this.brand_name = brand
             var current_brand = ''
@@ -370,9 +383,9 @@ export default {
                         }
                     });
                 }
-
-                this.fixShoeList();
             });
+
+            this.fixShoeList();
         },
         fixShoeList() {
             var arr = [];
@@ -426,7 +439,7 @@ export default {
             }
         },
         getDate() {
-            this.date_today = moment().format('LL');
+            this.date_today = moment().format('LL hh:mm A');
         }
     }
 }

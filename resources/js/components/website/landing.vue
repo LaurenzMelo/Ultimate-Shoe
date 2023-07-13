@@ -40,11 +40,15 @@
                 Price Range
             </label>
             <div class="range-slider d-none" id="range-slider">
-                <input type="range" min="0" max="50000" step="100" v-model="slider_min" />
-                <span class="font-weight-bold" style="font-size: 1.5em"> ₱ </span><input class="px-3 py-1" type="number" min="0" max="50000" step="100" v-model="slider_min" />
+                <input type="range" min="0" max="999999999" step="1000" v-model="slider_min" />
+                <span class="font-weight-bold" style="font-size: 1.5em;"> ₱ </span>
+                <!-- Min -->
+                <input class="px-3 py-1" type="number" style="width: 15%" min="0" max="999999999" step="1000" v-model="slider_min" />
                 <span class="ml-3 mr-3"> TO </span>
-                <span class="font-weight-bold" style="font-size: 1.5em"> ₱ </span><input type="range" min="0" max="50000" step="100" v-model="slider_max" />
-                <input class="px-3 py-1" type="number" min="0" max="50000" step="100" v-model="slider_max" />
+                <span class="font-weight-bold" style="font-size: 1.5em"> ₱ </span>
+                <!-- Max -->
+                <input type="range" min="0" max="999999999" step="1000"  v-model="slider_max" />
+                <input class="px-3 py-1" id="slider-max" style="width: 15%" type="number" min="0" max="999999999" step="1000" v-model="slider_max" />
                 <button @click="searchSpecific(0, false, true)" type="button" class="btn btn-warning ml-4"> Search </button>
             </div>
         </div>
@@ -58,6 +62,11 @@
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }}</h5>
                                 <p class="card-text font-weight-bold"> ₱ {{ usdToPhp(shoe.retailPrice) }} </p>
                                 <p class="card-text"> {{ this.changeAndCut(shoe.description) }} </p>
+                                <hr>
+                                <div class="mtb-05 orange">
+                                    ★ 4.87 <span  class="gray margin-sold"> | </span> <span class="gray"> {{ shoe.sold }} sold </span>
+                                    <span style="float: right"> <a @click="rateMeShoe(shoe)" class="shoe-review-link" data-bs-toggle="modal" data-bs-target="#reviewShoe"> Rate me </a> </span>
+                                </div>
                                 <p class="card-text">
                                     <a @click="seeMore(shoe)" class="pseudo-link" data-bs-toggle="modal" data-bs-target="#checkShoe"> See More </a>
                                 </p>
@@ -110,6 +119,86 @@
             </div>
         </div>
     </div>
+    <!-- Review Shoe Modal -->
+    <div class="modal fade" id="reviewShoe" tabindex="-1" aria-labelledby="reviewShoeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-roboto font-weight-bold" id="reviewShoeLabel"> Write a review for {{ firstLetterUp(individual_shoe.shoeName) }} </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img :src="individual_shoe.thumbnail" class="card-img-top p-3" alt="shoes">
+                            </div>
+                        </div>
+                        <h4 class="text-roboto font-weight-bold mb-4"> Product Details </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="w-100">
+                                    <tr>
+                                        <td class="pb-2">Brand</td>
+                                        <td class="font-weight-bold pb-2"> {{ firstLetterUp(individual_shoe.brand) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pb-2"> Colorway </td>
+                                        <td class="font-weight-bold pb-2"> {{ individual_shoe.colorway }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pb-2"> Release Date </td>
+                                        <td class="font-weight-bold pb-2"> {{ fixDateFormat(individual_shoe.releaseDate) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pb-2"> Retail Price </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(individual_shoe.retailPrice) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pb-2"> Lowest <br>Resell Price </td>
+                                        <td class="font-weight-bold pb-2"> ₱ {{ usdToPhp(individual_shoe.lowestResellPrice) }} </td>
+                                    </tr>
+                                </table>
+                                <div class="mt-4"> 
+                                    <a v-if="individual_shoe.length != 0" :href="individual_shoe.resellLinks.stockX" target="_blank"> {{ individual_shoe.resellLinks.stockX }} </a>
+                                </div>
+                            </div>
+                        </div> 
+                        <hr>
+                        <h4 class="text-roboto font-weight-bold mb-4"> Rate this Shoe </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label> Name (optional) </label>
+                                    <input type="text" class="form-control" v-model="rate.name" />
+                                </div>
+                                <div class="form-group">
+                                    <label> Rate </label>
+                                    <select class="form-select" v-model="rate.star_rate" required>
+                                        <option value="" disabled selected></option>
+                                        <option value="1"> ★ </option>
+                                        <option value="2"> ★★ </option>
+                                        <option value="3"> ★★★ </option>
+                                        <option value="4"> ★★★★ </option>
+                                        <option value="5"> ★★★★★ </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label> Your Review </label>
+                                    <textarea class="form-control" v-model="rate.your_review" rows="3" required/>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveReview()">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Check Shoe Modal -->
     <div class="modal fade" id="checkShoe" tabindex="-1" aria-labelledby="checkShoeLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -158,6 +247,28 @@
                                 <p> {{ this.changeNewLine(individual_shoe.description) }} </p>
                             </div>
                         </div> 
+                        <div v-if="shoe_reviews.length != 0">
+                            <h4 class="text-roboto font-weight-bold mb-0 pt-5"> User Reviews <span class="ml-1 orange"> ★ {{ twoDecimal(average_shoe_ratings) }} </span> </h4>
+                            <span style="font-style: italic; color: gray"> Based on {{ num_reviews }} reviews</span>
+                            <div class="row mt-4">
+                                <div class="col-md-4" v-for="(review, index) in shoe_reviews" :key="index">
+                                    <div class="p-3 shadow text-center pt-4 pb-4 review-block">
+                                        <h6 class="font-weight-bold"> {{ review.name }} </h6>
+                                        <hr class="reviews-hr">
+                                        <div class="mtb-05 orange">
+                                            <span v-for="(star, index) in review.rate" :key="index"> ★ </span>
+                                        </div>
+                                        <div class="sub-text"> {{ fixDate(review.created_at) }} </div>
+                                        <div class="pt-3 pb-4 p-2"> {{ review.review }} </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <h4 class="text-roboto font-weight-bold mb-4 pt-5" style="color: gray"> No Review Found </h4>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -182,13 +293,21 @@ export default {
             search: '',
             search_error: false,
             slider_min: 0,
-            slider_max: 50000,
+            slider_max: 999999999,
             min_price: 0,
-            max_price: 50000,
+            max_price: 999999999,
             show_price_range: false,
             // As of May 24, you can change this.
             conv_rate: 55.75,
             selected_brand: [],
+            shoe_reviews: [],
+            num_reviews: 0,
+            average_shoe_ratings: 0,
+            rate: {
+                name: '',
+                star_rate: 0,
+                your_review: '',
+            },
             shoe_brands: [
                 {
                     name: 'All',
@@ -358,6 +477,16 @@ export default {
         }
     },
     watch: {
+        max_price(val) {
+            if (val > 999999999) {
+                this.max_price = 999999999
+            }
+        },
+        min_price(val) {
+            if (val > 999999999) {
+                this.min_price = 999999999
+            }
+        },
         show_price_range(val) {
             var range = document.getElementById("range-slider");
 
@@ -416,6 +545,44 @@ export default {
         this.searchShoeBrand('All');
     },
     methods: {
+        saveReview() {
+            Swal.fire({
+                title: 'Submit Shoe Review?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (!this.rate.name) {
+                        this.rate.name = 'Anonymous User'
+                    }
+
+                    axios.post('api/reviews/storeShoeReview', {
+                        name: this.rate.name,
+                        rate: this.rate.star_rate,
+                        review: this.rate.your_review,
+                        shoe_id: this.individual_shoe.id,
+                        shoe_name: this.individual_shoe.shoeName,
+                        shoe_brand: this.individual_shoe.brand,
+                    }).then(response => {
+                        if (response.status == 200) {
+                            this.rate.name = '';
+                            this.rate.star_rate = '';
+                            this.rate.your_review = '';
+
+                            Swal.fire({
+                                title: 'Your review is recorded',
+                                text: 'Please refresh to see your review.',
+                                icon: 'success',
+                            })
+                        }
+                    })
+
+                }
+            });
+        },
         searchSpecific(page = 0, from_pages = false, from_range = false, count = 20,) {
             let search = this.search
             let brand = this.brand_name
@@ -459,6 +626,7 @@ export default {
                                 releaseDate: json.hits[i].release_date,
                                 description: json.hits[i].description,
                                 urlKey: json.hits[i].url,
+                                id: json.hits[i].id,
                                 resellLinks: {
                                     stockX: 'https://stockx.com/' + json.hits[i].url
                                 }
@@ -517,6 +685,8 @@ export default {
                             releaseDate: json.hits[i].release_date,
                             description: json.hits[i].description,
                             urlKey: json.hits[i].url,
+                            sold: json.hits[i].deadstock_sold,
+                            id: json.hits[i].id,
                             resellLinks: {
                                 stockX: 'https://stockx.com/' + json.hits[i].url
                             }
@@ -539,9 +709,22 @@ export default {
                 })
             }
         },
+        rateMeShoe(shoe) {
+            this.individual_shoe = []
+            this.individual_shoe = shoe
+        },
         seeMore(shoe) {
             this.individual_shoe = []
             this.individual_shoe = shoe
+            axios.post('api/reviews/getShoeReviews', {
+                id: this.individual_shoe.id,
+                name: this.individual_shoe.shoeName,
+                brand: this.individual_shoe.brand
+            }).then(response => {
+                this.shoe_reviews = response.data.data
+                this.num_reviews = response.data.num_reviews
+                this.average_shoe_ratings = response.data.average
+            })
         },
         changeAndCut(desc) {
             if (desc) {
@@ -567,6 +750,11 @@ export default {
                 return moment(newDate).format('LL')
             }
         },
+        fixDate(date) {
+            if (date) {
+                return moment(date).format('LLL')
+            }
+        },
         replaceDash(desc) {
             var newDesc = ''
             newDesc = desc.replaceAll(/-/g, ' ')
@@ -586,6 +774,11 @@ export default {
                 var multiply_num = num * this.conv_rate
 
                 return multiply_num.toLocaleString("en-US", {minimumFractionDigits: 2})
+            }
+        },
+        twoDecimal(num) {
+            if (num) {
+                return parseFloat(num).toFixed(2)
             }
         }
     }

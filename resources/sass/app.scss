@@ -77,6 +77,17 @@ body {
     cursor: pointer;
 }
 
+.shoe-review-link {
+  color: #D3561C;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.shoe-review-link:hover {
+  font-weight: 600;
+  color: #D3561C;
+}
+
 .shoe-comparison-list {
     border: 1px solid #CBCBCB;
     text-decoration: none;
@@ -146,10 +157,10 @@ body {
     -webkit-appearance: none;
   }
   
-  input[type=number]:invalid,
-  input[type=number]:out-of-range {
-    border: 2px solid #ff6347;
-  }
+  // input[type=number]:invalid,
+  // input[type=number]:out-of-range {
+  //   border: 2px solid #ff6347;
+  // }
   
   input[type=range] {
     -webkit-appearance: none;
@@ -205,5 +216,43 @@ body {
 
   .min-height {
     max-height: calc(110vh - 9rem);
+  }
+
+  .gray {
+    color: gray;
+  }
+
+  .margin-sold {
+    margin: 0px 3px 0px 5px
+  }
+
+  .brand-logo {
+    height: 60px;
+    width: 80px;
+    float: right;
+  }
+
+  .brand-logo-lv {
+    height: 60px;
+    width: 60px;
+    float: right;
+  }
+
+  .brand-logo-nike {
+    height: 50px;
+    width: 80px;
+    float: right;
+  }
+
+  .brand-logo-timberland {
+    height: 100px;
+    width: 120px;
+    float: right;
+  }
+
+  .brand-logo-width {
+    height: 50px;
+    width: 120px;
+    float: right;
   }
   

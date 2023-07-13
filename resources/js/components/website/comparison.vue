@@ -51,6 +51,10 @@
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }}</h5>
                                 <p class="card-text font-weight-bold"> ₱ {{ usdToPhp(shoe.retailPrice) }} </p>
                                 <p class="card-text"> {{ this.changeAndCut(shoe.description) }} </p>
+                                <hr>
+                                <div class="mtb-05 orange">
+                                    ★ 4.87 <span  class="gray margin-sold"> | </span> <span class="gray"> {{ shoe.sold }} sold </span>
+                                </div>
                                 <p class="card-text" v-if="count_num != 4 && (shoe.shoeName != shoe_1.shoeName && shoe.shoeName != shoe_2.shoeName && shoe.shoeName != shoe_3.shoeName)">
                                     <a @click="pickMe(shoe)" class="pseudo-link" style="text-decoration: none"> Pick Me! (Shoe # {{ count_num }}) </a>
                                 </p>

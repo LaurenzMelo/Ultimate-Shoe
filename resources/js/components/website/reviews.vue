@@ -3,7 +3,7 @@
         <div class="col-md-12 mt-5 text-center">
             <h2 class="font-weight-bold orange"> Reviews </h2>
             <hr class="reviews-hr">
-            <div class="mtb-05 orange"> {{ twoDecimal(average_star) }} ★ </div>
+            <div class="mtb-05 orange"> ★ {{ twoDecimal(average_star) }} </div>
             <div class="sub-text"> All Reviews: {{ review_list.length }} </div>
         </div>
         <div class="row pl-5 pr-5 pt-3 pb-5">
@@ -12,7 +12,7 @@
                     <h6 class="font-weight-bold"> {{ review.name }} </h6>
                     <hr class="reviews-hr">
                     <div class="mtb-05 orange">
-                        <span v-for="(star, index) in review.rate" :key="index">★ </span>
+                        <span v-for="(star, index) in review.rate" :key="index"> ★ </span>
                     </div>
                     <div class="sub-text"> {{ fixDateFormat(review.created_at) }} </div>
                     <div class="pt-3 pb-4 p-2"> {{ review.review }} </div>

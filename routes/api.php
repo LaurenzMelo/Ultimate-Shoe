@@ -23,5 +23,7 @@ Route::group(['prefix' => '/'], function () {
     Route::group(['prefix' => 'reviews'], function () {
         Route::post('store', [WebsiteController::class, 'storeReviews'])->name('reviews.store');
         Route::get('getReviews', [WebsiteController::class, 'getReviews'])->name('reviews.get');
+        Route::post('getShoeReviews', [WebsiteController::class, 'getShoeReviews'])->name('reviews.get_shoe_review');
+        Route::post('storeShoeReview', [WebsiteController::class, 'shoeReviews'])->name('reviews.shoe_review_store');
     });
 });
