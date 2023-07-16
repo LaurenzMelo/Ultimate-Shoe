@@ -57,6 +57,13 @@
                 <div class="row">
                     <div class="col-md-3 mt-4" v-for="(shoe, index) in shoe_list" :key="index">
                         <div class="card">
+                            <div> 
+                                <img v-if="shoe.brand == 'Superga' || shoe.brand == 'Birkenstock' || shoe.brand == 'ASICS'" :src="brandLogo(shoe.brand)" class="brand-logo-width mr-3 mt-3" />
+                                <img v-else-if="shoe.brand == 'Louis Vuitton'" :src="brandLogo(shoe.brand)" class="brand-logo-lv mr-3 mt-3" />
+                                <img v-else-if="shoe.brand == 'Nike' || shoe.brand == 'Versace'" :src="brandLogo(shoe.brand)" class="brand-logo-nike mr-3 mt-3" />
+                                <img v-else-if="shoe.brand == 'Timberland'" :src="brandLogo(shoe.brand)" class="brand-logo-timberland mr-3 mt-3" />
+                                <img v-else :src="brandLogo(shoe.brand)" class="brand-logo mr-3 mt-3" />
+                            </div>
                             <img :src="shoe['thumbnail']" class="card-img-top p-3" alt="shoes">
                             <div class="card-body" style="margin: 2px solid black">
                                 <h5 class="card-title text-roboto font-weight-bold">{{ firstLetterUp(shoe.shoeName) }}</h5>
@@ -64,8 +71,9 @@
                                 <p class="card-text"> {{ this.changeAndCut(shoe.description) }} </p>
                                 <hr>
                                 <div class="mtb-05 orange">
-                                    ★ 4.87 <span  class="gray margin-sold"> | </span> <span class="gray"> {{ shoe.sold }} sold </span>
-                                    <span style="float: right"> <a @click="rateMeShoe(shoe)" class="shoe-review-link" data-bs-toggle="modal" data-bs-target="#reviewShoe"> Rate me </a> </span>
+                                    <span v-if="shoe.average_rating"> ★ {{ twoDecimal(shoe.average_rating) }}</span> <span v-else> No Review </span>
+                                    <span  class="gray margin-sold"> | </span> <span class="gray"> {{ shoe.sold }} sold </span>
+                                    <span style="float: right"> <a @click="rateMeShoe(shoe)" class="shoe-review-link" data-bs-toggle="modal" data-bs-target="#rateShoe"> Rate me </a> </span>
                                 </div>
                                 <p class="card-text">
                                     <a @click="seeMore(shoe)" class="pseudo-link" data-bs-toggle="modal" data-bs-target="#checkShoe"> See More </a>
@@ -119,12 +127,12 @@
             </div>
         </div>
     </div>
-    <!-- Review Shoe Modal -->
-    <div class="modal fade" id="reviewShoe" tabindex="-1" aria-labelledby="reviewShoeLabel" aria-hidden="true">
+    <!-- Rate Shoe Modal -->
+    <div class="modal fade" id="rateShoe" tabindex="-1" aria-labelledby="rateShoeLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-roboto font-weight-bold" id="reviewShoeLabel"> Write a review for {{ firstLetterUp(individual_shoe.shoeName) }} </h5>
+                    <h5 class="modal-title text-roboto font-weight-bold" id="rateShoeLabel"> Write a review for {{ firstLetterUp(individual_shoe.shoeName) }} </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -249,9 +257,9 @@
                         </div> 
                         <div v-if="shoe_reviews.length != 0">
                             <h4 class="text-roboto font-weight-bold mb-0 pt-5"> User Reviews <span class="ml-1 orange"> ★ {{ twoDecimal(average_shoe_ratings) }} </span> </h4>
-                            <span style="font-style: italic; color: gray"> Based on {{ num_reviews }} reviews</span>
+                            <span style="font-style: italic; color: gray"> Based on {{ num_reviews }} review(s) </span>
                             <div class="row mt-4">
-                                <div class="col-md-4" v-for="(review, index) in shoe_reviews" :key="index">
+                                <div class="col-md-4 mb-4" v-for="(review, index) in shoe_reviews" :key="index">
                                     <div class="p-3 shadow text-center pt-4 pb-4 review-block">
                                         <h6 class="font-weight-bold"> {{ review.name }} </h6>
                                         <hr class="reviews-hr">
@@ -292,8 +300,6 @@ export default {
             next_page: 2,
             search: '',
             search_error: false,
-            slider_min: 0,
-            slider_max: 999999999,
             min_price: 0,
             max_price: 999999999,
             show_price_range: false,
@@ -545,6 +551,41 @@ export default {
         this.searchShoeBrand('All');
     },
     methods: {
+        brandLogo(brand) {
+            let is_present = this.shoe_brands.find(e => e.name == this.firstLetterUp(brand))
+
+            if (is_present) {
+                return "images/logo/" + brand + ".png"
+            } else {
+                return "images/logo/Unknown.png"
+            }
+        },
+        getReviewPerShoe() {
+            let shoe_ids = []
+
+            this.shoe_list.forEach(shoe => {
+                shoe_ids.push(shoe.id)
+            })
+
+            axios.post('api/reviews/getAverageRating', {
+                ids: shoe_ids,
+            }).then(response => {
+                let shoe_data = response.data.data
+
+                this.shoe_list.forEach(shoe => {
+                    // Find match id of shoe to response.data.data
+                    // if match, get the average
+                    let assignment = shoe_data.find(e => e.id == shoe.id)
+
+                    if (assignment.average) {
+                        shoe.average_rating = assignment.average
+                    } else {
+                        shoe.average_rating = 0
+                    }
+                })
+                
+            })
+        },
         saveReview() {
             Swal.fire({
                 title: 'Submit Shoe Review?',
@@ -583,7 +624,7 @@ export default {
                 }
             });
         },
-        searchSpecific(page = 0, from_pages = false, from_range = false, count = 20,) {
+        async searchSpecific(page = 0, from_pages = false, from_range = false, count = 12,) {
             let search = this.search
             let brand = this.brand_name
             let min_price = (this.min_price / this.conv_rate).toFixed(2)
@@ -603,7 +644,7 @@ export default {
             access.scrollIntoView({behavior: 'smooth'}, true);
 
             if (search || page || (page == 0 && from_pages == true) || (page == 0 && from_range == true)) {
-                axios.post('https://xw7sbct9v6-1.algolianet.com/1/indexes/products/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.32.1&x-algolia-application-id=XW7SBCT9V6&x-algolia-api-key=6b5e76b49705eb9f51a06d3c82f7acee', {
+                await axios.post('https://xw7sbct9v6-1.algolianet.com/1/indexes/products/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.32.1&x-algolia-application-id=XW7SBCT9V6&x-algolia-api-key=6b5e76b49705eb9f51a06d3c82f7acee', {
                     "params" : "query=${" + brand + " " + search + "}&facets=*&filters=&hitsPerPage=" + count + "&page=" + this.active_page + ""
                 }).then(response => {
                     var json = response.data
@@ -626,6 +667,7 @@ export default {
                                 releaseDate: json.hits[i].release_date,
                                 description: json.hits[i].description,
                                 urlKey: json.hits[i].url,
+                                sold: json.hits[i].deadstock_sold,
                                 id: json.hits[i].id,
                                 resellLinks: {
                                     stockX: 'https://stockx.com/' + json.hits[i].url
@@ -643,9 +685,9 @@ export default {
             } else {
                 this.search_error = true
             }
-            
+            this.getReviewPerShoe()
         },
-        searchShoeBrand(brand, count = 20) {
+        async searchShoeBrand(brand, count = 12) {
             this.brand_name = brand
             this.search = ''
             this.active_page = 0
@@ -658,7 +700,7 @@ export default {
             var access = document.getElementById("go-here");
             access.scrollIntoView({behavior: 'smooth'}, true);
 
-            axios.post('https://xw7sbct9v6-1.algolianet.com/1/indexes/products/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.32.1&x-algolia-application-id=XW7SBCT9V6&x-algolia-api-key=6b5e76b49705eb9f51a06d3c82f7acee', {
+            await axios.post('https://xw7sbct9v6-1.algolianet.com/1/indexes/products/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.32.1&x-algolia-application-id=XW7SBCT9V6&x-algolia-api-key=6b5e76b49705eb9f51a06d3c82f7acee', {
                 "params" : "query=${" + brand + "}&facets=*&filters=&hitsPerPage=" + count + "&page=" + this.active_page + ""
             }).then(response => {
                 var json = response.data
@@ -670,10 +712,6 @@ export default {
 
                 for (var i = 0; i < json.hits.length; i++) {
                     if (json.hits[i].product_category == 'sneakers' && (json.hits[i].brand.toLowerCase() == this.brand_name.toLowerCase() || this.brand_name == 'All')) {
-                        // if (!json.hits[i].style_id || (json.hits[i].style_id).indexOf(' ') >= 0) {
-                        //     numOfShoes--;
-                        //     continue;
-                        // }
                         var shoe = {
                             shoeName: json.hits[i].name,
                             brand: json.hits[i].brand,
@@ -699,6 +737,7 @@ export default {
                 }
                 this.shoe_list = products
             });
+            this.getReviewPerShoe()
         },
         getBrand(brand) {
             if (brand) {
