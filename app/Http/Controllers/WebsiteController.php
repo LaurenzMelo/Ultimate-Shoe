@@ -30,10 +30,6 @@ class WebsiteController extends Controller
         return view('pages.website.most-viewed');
     }
 
-    // public function seeMore(Request $request) {
-    //     dd($request->all());
-    // }
-
     public function reviews() {
         return view('pages.website.reviews');
     }
@@ -62,6 +58,26 @@ class WebsiteController extends Controller
         ];
     }
 
+    public function getAverageRating(Request $request) {
+        $data = [];
+        $ids = $request->ids;
+
+        for ($i = 0; $i < count($request->ids); $i++) {
+            $average = DB::table('shoe_reviews')
+            ->where('shoe_id', $ids[$i])
+            ->average('rate');
+
+            $data[$i]['id'] = $ids[$i];
+            $data[$i]['average'] = $average;
+        }
+
+        return [
+            'data' => $data,
+            'status' => 200,
+            'message' => 'success'
+        ];
+    }
+
     public function getShoeReviews(Request $request) {
         $reviews = ShoeReview::where('shoe_id', $request->id)
         ->where('shoe_name', $request->name)
@@ -85,6 +101,39 @@ class WebsiteController extends Controller
             'data' => $reviews,
             'average' => $average,
             'num_reviews' => $num_reviews,
+            'status' => 200,
+            'message' => 'success'
+        ];
+    }
+
+    public function getShoeReviewsComparison(Request $request) {
+        $data = [];
+        $shoes = $request->shoes;
+
+        for ($i = 0; $i < count($shoes); $i++) {
+            $data[$i]['id'] = $shoes[$i]['id'];
+
+            $data[$i]['reviews'] = ShoeReview::where('shoe_id', $shoes[$i]['id'])
+            ->where('shoe_name', $shoes[$i]['shoeName'])
+            ->where('shoe_brand', $shoes[$i]['brand'])
+            ->orderBy('created_at', 'DESC')
+            ->limit(4)
+            ->get();
+
+            $data[$i]['num_reviews'] = ShoeReview::where('shoe_id', $shoes[$i]['id'])
+            ->where('shoe_name', $shoes[$i]['shoeName'])
+            ->where('shoe_brand', $shoes[$i]['brand'])
+            ->count();
+
+            $data[$i]['average'] = DB::table('shoe_reviews')
+            ->where('shoe_id', $shoes[$i]['id'])
+            ->where('shoe_name', $shoes[$i]['shoeName'])
+            ->where('shoe_brand', $shoes[$i]['brand'])
+            ->average('rate');
+        }
+
+        return [
+            'data' => $data,
             'status' => 200,
             'message' => 'success'
         ];
