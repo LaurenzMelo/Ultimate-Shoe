@@ -4,7 +4,7 @@ use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('pages/website/index');
+    return view('pages/website/landing');
 })->name('dashboard');
 
 Auth::routes([
