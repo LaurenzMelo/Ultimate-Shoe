@@ -22,7 +22,3 @@ Route::get('/comparison', [WebsiteController::class, 'comparison'])->name('compa
 Route::get('/discover-most-popular', [WebsiteController::class, 'inDemand'])->name('most-in-demand');
 Route::get('/discover-whats-hot', [WebsiteController::class, 'mostSearched'])->name('whats-hot');
 Route::get('/reviews', [WebsiteController::class, 'reviews'])->name('reviews');
-
-Route::get('/dashboard', function () {
-    return view('pages/website/landing'); // Replace 'dashboard' with the appropriate view name
-})->name('dashboard');
