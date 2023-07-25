@@ -24,5 +24,5 @@ Route::get('/discover-whats-hot', [WebsiteController::class, 'mostSearched'])->n
 Route::get('/reviews', [WebsiteController::class, 'reviews'])->name('reviews');
 
 Route::get('/dashboard', function () {
-    return view('dashboard'); // Replace 'dashboard' with the appropriate view name
+    return view('pages/website/landing'); // Replace 'dashboard' with the appropriate view name
 })->name('dashboard');
