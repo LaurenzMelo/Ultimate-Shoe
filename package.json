@@ -15,7 +15,9 @@
         "vue": "^3.2.37"
     },
     "dependencies": {
+        "apexcharts": "^3.41.0",
         "moment": "^2.29.4",
-        "sweetalert2": "^11.7.5"
+        "sweetalert2": "^11.7.5",
+        "vue3-apexcharts": "^1.4.4"
     }
 }
