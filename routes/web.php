@@ -4,8 +4,8 @@ use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('pages/website/landing');
-})->name('dashboard');
+    return view('pages/website/stats');
+})->name('stats');
 
 Auth::routes([
     'register' => false,
