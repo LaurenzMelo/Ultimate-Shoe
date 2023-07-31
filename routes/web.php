@@ -4,8 +4,8 @@ use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('pages/website/landing');
-})->name('dashboard');
+    return view('pages/website/stats');
+})->name('stats');
 
 Auth::routes([
     'register' => false,
@@ -14,7 +14,7 @@ Auth::routes([
     'login' => false
 ]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'landing'])->name('home');
 
 // Website
 Route::get('/main', [WebsiteController::class, 'main'])->name('main');
